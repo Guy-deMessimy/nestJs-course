@@ -18,6 +18,9 @@ export class Coffee {
   @Column()
   brand: string;
 
+  @Column({ default: 0 })
+  recommendations: number;
+
   // use the 2 parameter to store array's as json and make column optionnal
   // @Column('json', { nullable: true })
   // flavors: string[];
@@ -26,5 +29,5 @@ export class Coffee {
   @ManyToMany((type) => Flavor, (flavor) => flavor.coffees, {
     cascade: true, // 👈 or optionally just insert or update ['insert']
   })
-  flavors: string[];
+  flavors: Flavor[];
 }
