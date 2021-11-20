@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 
 /* Event */
+// help speed to retrieve data with @Index
+@Index(['name', 'type'])
 @Entity()
 export class Event {
   @PrimaryGeneratedColumn()
@@ -9,6 +11,7 @@ export class Event {
   @Column()
   type: string;
 
+  @Index()
   @Column()
   name: string;
 
