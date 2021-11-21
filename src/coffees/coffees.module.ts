@@ -7,6 +7,9 @@ import { Coffee } from './entities/coffee.entity';
 import { Flavor } from './entities/flavor.entity';
 import { COFFEE_BRANDS } from './coffees.constants';
 import { Connection } from 'typeorm';
+import { ConfigModule } from '@nestjs/config';
+import coffeesConfig from './config/coffee.config';
+
 // Our mock implementation
 export class MockCoffeesService {}
 
@@ -16,18 +19,22 @@ export class MockCoffeesService {}
 // class ProductionConfigService {}
 
 // need to more realistic illustration factory providers
-@Injectable()
-export class CoffeeBrandsFactory {
-  create() {
-    /* do something */
-    return ['buddy brew', 'nescafe', 'brazilian gust'];
-  }
-}
+// @Injectable()
+// export class CoffeeBrandsFactory {
+//   create() {
+//     /* do something */
+//     return ['buddy brew', 'nescafe', 'brazilian gust'];
+//   }
+// }
 @Module({
-  imports: [TypeOrmModule.forFeature([Coffee, Flavor, Event])],
+  imports: [
+    TypeOrmModule.forFeature([Coffee, Flavor, Event]),
+    // partial registration pattern, register your config file close to their domain
+    ConfigModule.forFeature(coffeesConfig),
+  ],
   controllers: [CoffeesController],
   // nest providers
-  // providers: [CoffeesService],
+  providers: [CoffeesService],
   // --------------------------------------------------------------------
   // 1/ illustrate custom providers with mock CoffeService providers pattern
   // providers: [
@@ -92,14 +99,14 @@ export class CoffeeBrandsFactory {
   // ],
   // ----------------------------------------
   // 5/ To illustarte control providers scope
-  providers: [
-    CoffeesService,
-    {
-      provide: COFFEE_BRANDS, // 👈
-      useFactory: () => ['buddy brew', 'nescafe'],
-      scope: Scope.TRANSIENT,
-    },
-  ],
+  // providers: [
+  //   CoffeesService,
+  //   {
+  //     provide: COFFEE_BRANDS, // 👈
+  //     useFactory: () => ['buddy brew', 'nescafe'],
+  //     scope: Scope.TRANSIENT,
+  //   },
+  // ],
   exports: [CoffeesService],
 })
 export class CoffeesModule {}

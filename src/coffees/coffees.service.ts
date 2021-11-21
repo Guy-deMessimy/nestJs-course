@@ -15,6 +15,8 @@ import { Coffee } from './entities/coffee.entity';
 import { Flavor } from './entities/flavor.entity';
 import { Event } from '../events/entities/event.entity';
 import { COFFEE_BRANDS } from './coffees.constants';
+import { ConfigService, ConfigType } from '@nestjs/config';
+import coffeesConfig from './config/coffee.config';
 
 // to illustrate control providers scope
 // by default the default scope being Signleton as the value like @Injectable(scope: Scope.DEFAULT)
@@ -25,8 +27,10 @@ import { COFFEE_BRANDS } from './coffees.constants';
 // but existing 2 other lifetimes available for @Injectable() providers : TRANSIENT
 // @Injectable({ scope: Scope.TRANSIENT })
 
-// and 2nd method is REQUEST scope which provides a new instance of the provider exclusively for each incoming request
-@Injectable({ scope: Scope.REQUEST })
+// // and 2nd method is REQUEST scope which provides a new instance of the provider exclusively for each incoming request
+// @Injectable({ scope: Scope.REQUEST })
+
+@Injectable()
 export class CoffeesService {
   // mock data without data storage
   // private coffees: Coffee[] = [
@@ -43,12 +47,24 @@ export class CoffeesService {
     private readonly coffeeRepository: Repository<Coffee>,
     @InjectRepository(Flavor)
     private readonly flavorRepository: Repository<Flavor>,
-    private readonly connection: Connection,
-    // illustrate custom providers with private tokken
-    @Inject(COFFEE_BRANDS) coffeeBrands: string[],
+    private readonly connection: Connection, // illustrate custom providers with private tokken // @Inject(COFFEE_BRANDS) coffeeBrands: string[],
+    // private readonly configService: ConfigService,
+    @Inject(coffeesConfig.KEY)
+    private readonly coffeesConfiguration: ConfigType<typeof coffeesConfig>,
   ) {
     // console.log(coffeeBrands);
     console.log('CoffeesService instantiated');
+    /* Accessing process.env variables from ConfigService */
+    // const databaseHost = this.configService.get<string>(
+    //   'database.host',
+    //   'localhost',
+    // );
+    // use partial registration pattern
+    // const coffeeConfig = this.configService.get<string>('coffees.foo');
+    // to have full type-safety when we retrieves props prefer use :
+
+    // console.log(coffeeConfig);
+    console.log(coffeesConfig);
   }
 
   findAll(paginationQuery: PaginationQueryDto) {

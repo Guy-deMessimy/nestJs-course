@@ -21,12 +21,10 @@ import { UpdateCoffeeDto } from './dto/update-coffee.dto';
 @Controller('coffees')
 export class CoffeesController {
   constructor(
-    private readonly coffeesService: CoffeesService,
-    /* you can inject original request but becareful performance */
-    @Inject(REQUEST) private readonly request: Request,
+    private readonly coffeesService: CoffeesService /* you can inject original request but becareful performance */, // @Inject(REQUEST) private readonly request: Request,
   ) {
     console.log('CoffeesController created');
-    console.log('original request object is injected', request);
+    // console.log('original request object is injected', request);
   }
 
   //   @Get('flavors')
