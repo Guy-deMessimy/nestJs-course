@@ -1,20 +1,20 @@
 import { DynamicModule, Module } from '@nestjs/common';
 import { createConnection, ConnectionOptions } from 'typeorm';
 
-@Module({
-  // database module statically configure and can't be customized
-  // what if another app wants to use database module but needs to use a different port ?
-  //   providers: [
-  //     {
-  //       provide: 'CONNECTION',
-  //       useValue: createConnection({
-  //         type: 'postgres',
-  //         host: 'localhost',
-  //         port: 5432,
-  //       }),
-  //     },
-  //   ],
-})
+// @Module({
+// database module statically configure and can't be customized
+// what if another app wants to use database module but needs to use a different port ?
+//   providers: [
+//     {
+//       provide: 'CONNECTION',
+//       useValue: createConnection({
+//         type: 'postgres',
+//         host: 'localhost',
+//         port: 5432,
+//       }),
+//     },
+//   ],
+// })
 // illustrate to create a dynamic module that can be passed config settings before it instantiates
 // Improved Dynamic Module way of creating CONNECTION provider
 export class DatabaseModule {

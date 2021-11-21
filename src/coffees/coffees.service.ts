@@ -4,6 +4,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  Scope,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
@@ -15,7 +16,17 @@ import { Flavor } from './entities/flavor.entity';
 import { Event } from '../events/entities/event.entity';
 import { COFFEE_BRANDS } from './coffees.constants';
 
-@Injectable()
+// to illustrate control providers scope
+// by default the default scope being Signleton as the value like @Injectable(scope: Scope.DEFAULT)
+// once our app has bootstrapped, singleton providers have been instantiated
+// cf in Nest everything is shared accorss incoming request and node is not multithread :
+// => so singleton instance is fully safe && performance reasons
+
+// but existing 2 other lifetimes available for @Injectable() providers : TRANSIENT
+// @Injectable({ scope: Scope.TRANSIENT })
+
+// and 2nd method is REQUEST scope which provides a new instance of the provider exclusively for each incoming request
+@Injectable({ scope: Scope.REQUEST })
 export class CoffeesService {
   // mock data without data storage
   // private coffees: Coffee[] = [
@@ -36,7 +47,8 @@ export class CoffeesService {
     // illustrate custom providers with private tokken
     @Inject(COFFEE_BRANDS) coffeeBrands: string[],
   ) {
-    console.log(coffeeBrands);
+    // console.log(coffeeBrands);
+    console.log('CoffeesService instantiated');
   }
 
   findAll(paginationQuery: PaginationQueryDto) {

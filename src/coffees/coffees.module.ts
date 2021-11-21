@@ -1,4 +1,4 @@
-import { Injectable, Module } from '@nestjs/common';
+import { Injectable, Module, Scope } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Event } from '../events/entities/event.entity';
 import { CoffeesController } from './coffees.controller';
@@ -11,9 +11,9 @@ import { Connection } from 'typeorm';
 export class MockCoffeesService {}
 
 // need to illustrate custom providers with class providers
-class ConfigService {}
-class DevelopmentConfigService {}
-class ProductionConfigService {}
+// class ConfigService {}
+// class DevelopmentConfigService {}
+// class ProductionConfigService {}
 
 // need to more realistic illustration factory providers
 @Injectable()
@@ -73,21 +73,31 @@ export class CoffeeBrandsFactory {
   //     inject: [CoffeeBrandsFactory],
   //   },
   // ],
-  // 4/illustrate async providers (not want to start accepting request until database connection is established)
+  // 4/ illustrate async providers (not want to start accepting request until database connection is established)
+  // providers: [
+  //   CoffeesService,
+  //   {
+  //     provide: COFFEE_BRANDS,
+  //     // Note "async" here, and Promise/Async event inside the Factory function
+  //     // Could be a database connection / API call / etc
+  //     // In our case we're just "mocking" this type of event with a Promise
+  //     useFactory: async (connection: Connection): Promise<string[]> => {
+  //       // const coffeeBrands = await connection.query('SELECT * ...');
+  //       const coffeeBrands = await Promise.resolve(['buddy brew', 'nescafe']);
+  //       console.log('[!] Async factory');
+  //       return coffeeBrands;
+  //     },
+  //     inject: [Connection],
+  //   },
+  // ],
+  // ----------------------------------------
+  // 5/ To illustarte control providers scope
   providers: [
     CoffeesService,
     {
-      provide: COFFEE_BRANDS,
-      // Note "async" here, and Promise/Async event inside the Factory function
-      // Could be a database connection / API call / etc
-      // In our case we're just "mocking" this type of event with a Promise
-      useFactory: async (connection: Connection): Promise<string[]> => {
-        // const coffeeBrands = await connection.query('SELECT * ...');
-        const coffeeBrands = await Promise.resolve(['buddy brew', 'nescafe']);
-        console.log('[!] Async factory');
-        return coffeeBrands;
-      },
-      inject: [Connection],
+      provide: COFFEE_BRANDS, // 👈
+      useFactory: () => ['buddy brew', 'nescafe'],
+      scope: Scope.TRANSIENT,
     },
   ],
   exports: [CoffeesService],
