@@ -10,9 +10,11 @@ import {
   Patch,
   Post,
   Query,
+  SetMetadata,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { Public } from 'src/common/decorators/public.decorator';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CoffeesService } from './coffees.service';
 import { CreateCoffeeDto } from './dto/create-coffee.dto';
@@ -39,6 +41,8 @@ export class CoffeesController {
   //     return `This action returns all coffees. Limit : ${limit}, offset: ${offset}`;
   //   }
 
+  // @SetMetadata('isPublic', true) not a best practice for reusable code
+  @Public() // new decorator
   @Get()
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.coffeesService.findAll(paginationQuery);
@@ -55,6 +59,7 @@ export class CoffeesController {
   //     return `This action returns #${id} cofee`;
   //   }
 
+  @Public()
   @Get(':id')
   findOne(@Param('id') id: number) {
     console.log(typeof id);
@@ -67,7 +72,7 @@ export class CoffeesController {
   //   create(@Body() body) {
   //     return body;
   //   }
-
+  @Public()
   @Post()
   @HttpCode(HttpStatus.GONE)
   create(@Body() createCoffeeDto: CreateCoffeeDto) {
