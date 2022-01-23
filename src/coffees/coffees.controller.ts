@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { Request } from 'express';
+import { Protocol } from 'src/common/decorators/protocol.decorator';
 import { Public } from 'src/common/decorators/public.decorator';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { CoffeesService } from './coffees.service';
@@ -45,8 +46,12 @@ export class CoffeesController {
   // @SetMetadata('isPublic', true) not a best practice for reusable code
   @Public() // new decorator
   @Get()
-  async findAll(@Query() paginationQuery: PaginationQueryDto) {
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+  async findAll(
+    @Protocol('https') protocol: string,
+    @Query() paginationQuery: PaginationQueryDto,
+  ) {
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
+    console.log(protocol);
     return this.coffeesService.findAll(paginationQuery);
   }
 
