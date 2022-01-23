@@ -18,9 +18,9 @@ export class WrapResponseInterceptor implements NestInterceptor {
     // the intercept method wraps the Request/Response stream allowing to
     // implement custom logic before and after execution of the final route
     console.log('Before...');
-
-    return next.handle().pipe(tap((data) => console.log('After...', data)));
     // use Callhandler to invoke the route handler method within your interceptor
+    // return next.handle().pipe(tap((data) => console.log('After...', data)));
+    // map Response into an object with a key/value of data
     return next.handle().pipe(map((data) => ({ data })));
   }
 }
